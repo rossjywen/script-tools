@@ -57,7 +57,7 @@ do
 	#if [[ $file =~ .*${name_start}.*${name_end} ]]
 	#then
 		count=$[$count+1]
-		origin_filename=$(ls ${file#./})
+		origin_filename=${file#./}
 		modified_filename=$(echo $origin_filename | sed -ne "s/ /-/gp")
 		#echo origin file name : $origin_filename
 		#echo modify file name : $modified_filename
