@@ -4,14 +4,31 @@ import xlwings
 import sys
 import getopt
 import json
+from collections import OrderedDict
 
 def dump_from_excel():
 	excel_obj = xlwings.Book(input_file)
-
 	sht = excel_obj.sheets[input_page]
+	info = sht.range(start_cell + ':' + end_cell).value
 
-	res = sht.range(start_cell + ':' + end_cell).value
-	json_data = json.dumps(res, indent=4)
+	if output_type == 'list':
+		json_data = json.dumps(info, indent=4)
+	elif output_type == 'dict':
+		header = info[0]
+		content = info[1:]
+		entry_len = len(info[0])
+		parse_list = []
+
+		for item in content:
+			parse_info = OrderedDict()
+			for index in range(0, entry_len):
+				parse_info[header[index]] = item[index]
+			parse_list.append(parse_info)
+
+		json_data = json.dumps(parse_list, indent=4)
+	else:
+		pass
+		
 	
 	if output_file == '':
 		print(json_data)
@@ -34,6 +51,7 @@ def print_usage():
 	print(' -o/--output= + file name specify output (optional)')
 	print(' -s/--start= + start excel cell e.g a1/b5/c2... (necessary)')
 	print(' -e/--end= + end excel cell e.g a2/c10/g100... (necessary)')
+	print(' -t/--type= + list/dict to specify format of output data')
 
 
 input_file=''
@@ -41,6 +59,7 @@ output_file=''
 input_page=''
 start_cell=''
 end_cell=''
+output_type=''
 
 def args_parse(argv):
 	global input_file
@@ -48,9 +67,10 @@ def args_parse(argv):
 	global output_file
 	global start_cell
 	global end_cell
+	global output_type
 
 
-	parse, remainings = getopt.getopt(argv, '-h-i:-p:-s:-e:-o:', ['help', 'input=', 'page=', 'start=', 'end=', 'output='])
+	parse, remainings = getopt.getopt(argv, '-h-i:-p:-s:-e:-o:-t:', ['help', 'input=', 'page=', 'start=', 'end=', 'output=', '--type='])
 	#print(parse)
 	for opt, arg in parse:
 		if opt in ['-h', '--help']:
@@ -66,6 +86,8 @@ def args_parse(argv):
 			start_cell = arg
 		elif opt in ['-e', '--end']:
 			end_cell = arg
+		elif opt in ['-t', '--type']:
+			output_type = arg
 		else:
 			pass
 
@@ -83,6 +105,10 @@ def args_parse(argv):
 		sys.exit(1)
 	if end_cell == '':
 		print('lack of end cell name')
+		print_usage()
+		sys.exit(1)
+	if output_type not in ('list', 'dict'):
+		print('lack of output type or wrong type')
 		print_usage()
 		sys.exit(1)
 
