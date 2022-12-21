@@ -70,7 +70,7 @@ def args_parse(argv):
 	global output_type
 
 
-	parse, remainings = getopt.getopt(argv, '-h-i:-p:-s:-e:-o:-t:', ['help', 'input=', 'page=', 'start=', 'end=', 'output=', '--type='])
+	parse, remainings = getopt.getopt(argv, 'hi:p:s:e:o:t:', ['help', 'input=', 'page=', 'start=', 'end=', 'output=', 'type='])
 	#print(parse)
 	for opt, arg in parse:
 		if opt in ['-h', '--help']:

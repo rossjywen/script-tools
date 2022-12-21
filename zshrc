@@ -20,4 +20,5 @@ fi
 
 export PATH=$PATH:/opt/homebrew/bin/
 export PATH=$PATH:~/code/script-tools/
+export PATH=/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin/:/Users/rosswen/code/script-tools/:/Applications/MacVim.app/Contents/bin/
 
